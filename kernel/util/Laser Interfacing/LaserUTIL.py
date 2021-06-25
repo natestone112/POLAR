@@ -8,8 +8,11 @@ class LaserArray:
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        #send("SR,00,077", host, port)
-        message = send('m0', host, port)
+
+        # This next line fixes an issue that occurs when more lasers are addded
+        connected = send("SR,00,077", host, port)  # ***IMPORTANT*** Forces system to update # of connected lasers
+
+        message = send('m0', host, port)  # m0 command: gets all laser measurements
         message = message.split(",")  # Splits the message at each ","
         if message[0] == "ER":
             raise LaserError
@@ -17,7 +20,7 @@ class LaserArray:
             print("Connection with lasers successful")
             print("Host: " + self.host + " Port: " + str(port))
 
-    # gets all data relating to lasers currently connected
+    # gets all data relating to ALL lasers currently connected
     def getData(self):
         try:
 
@@ -28,7 +31,7 @@ class LaserArray:
         except:
             raise LaserError("Failed to retrieve laser data- Connection failure")
 
-    # gets laser measurement data of corresponding laser
+    # gets laser measurement data of corresponding to a SPECIFIC laser
     # laser_number is an int
     def getIndividual(self, laser_number):
         full_data = self.getData()
@@ -53,12 +56,11 @@ def send(command, host, port):
     return data
 
 
-host = "169.254.222.222"
-port = 64000
-print("DEMOING")
-#print(send("SR,00,077", host, port))
-print(send("m0", host, port))
+if __name__ == "__main__":
+    host = "169.254.222.222"
+    port = 64000
+    print("DEMOING")
 
-#EN1 = LaserArray(host, port)
-#print(EN1.getData())
-#print(EN1.getIndividual(2))
+    EN1 = LaserArray(host, port)
+    print(EN1.getData())
+    print(EN1.getIndividual(2))

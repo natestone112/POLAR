@@ -5,6 +5,8 @@ import csv
 from time import asctime
 
 #   Constants
+#   ***NOTE*** Field names can be changed to whatever formatting you desire to store
+
 field_names = ["time", "serial", "M1", "M2", "M3", "M4", "M5", "M6", "GO/NOGO",
                "DEV1", "DEV2", "DEV3", "DEV4", "DEV5", "DEV6", "FailFlag"]
 test_row = {"serial": "N/A", "M1": "1", "M2": "2", "M3": "3", "M4": "4", "M5": "5", "M6": "6", "GO/NOGO": "NOGO",
@@ -14,8 +16,10 @@ test_row = {"serial": "N/A", "M1": "1", "M2": "2", "M3": "3", "M4": "4", "M5": "
 #   databaseWrite()
 #   Writes single entry into the measurement csv, creating a new csv if none exists
 #   The current delimiter is TAB, or "\t"
+
+#   PARAMETERS:
 #   data is a dictionary with values mapped to the desired column name
-#   database is a string corresponding to the database folder name
+#   database is a string corresponding to the database folder name, any new database name will be created
 #   serial is an optional parameter, corresponding to the id for a specific set of measurements
 
 def databaseWrite(data, database, serial=None):
@@ -43,10 +47,12 @@ def databaseWrite(data, database, serial=None):
         with open((path + "measurements.csv"), "r", newline="") as csv_file:
             print("Opened current CSV file")
             try:
+                #   Detects whether or not a header appears to be present
                 if csv.Sniffer().has_header(csv_file.read(1024)):
                     has_header = True
             except:
                 print("file is corrupt")
+        #   Creates new file if old one seems corrupt
         if is_corrupt:
             with open((path + "measurements.csv"), "w", newline="") as csv_file:
                 print("created new CSV file, writing header ")

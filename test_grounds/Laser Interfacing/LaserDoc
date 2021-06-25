@@ -1,0 +1,4 @@
+The current IP of the laser is 169.254.222.222
+format of "m0" response
+"b'm0,-000000808,+100000000\\r\\n'"
+with 2 lasers connected
